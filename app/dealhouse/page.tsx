@@ -40,10 +40,14 @@ import {
   paymentAssets,
   rentFor,
 } from "@/lib/dealhouse";
+import {
+  isDealLobbyWaiting,
+  type DealLobbyScreen,
+} from "@/lib/dealhouse-lobby";
 import type { PeerConnection, PeerData, PeerInstance } from "@/lib/peer-types";
 
 type Role = "host" | "client" | "local" | null;
-type Screen = "menu" | "host" | "join" | "game";
+type Screen = DealLobbyScreen;
 
 const ROOM_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
@@ -259,7 +263,7 @@ export default function DealhousePage() {
     setRole("client");
     setActiveCode(code);
     setStatus("Finding that table…");
-    setScreen("join");
+    setScreen("client-wait");
     const peer = new window.Peer(undefined, { debug: 1 });
     peerRef.current = peer;
     peer.on("open", () => {
@@ -402,7 +406,7 @@ type LobbyProps = {
 };
 
 function DealLobby(props: LobbyProps) {
-  const isWaiting = props.screen === "host" || props.screen === "join";
+  const isWaiting = isDealLobbyWaiting(props.screen);
   return (
     <div className="dh-lobby-shell">
       <div className="dh-lobby-grid" aria-hidden />
