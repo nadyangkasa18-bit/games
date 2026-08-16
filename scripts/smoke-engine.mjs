@@ -4,6 +4,18 @@ import {
   completedGroups,
   createDealGame,
 } from "../lib/dealhouse.ts";
+import { isDealLobbyWaiting } from "../lib/dealhouse-lobby.ts";
+
+assert.equal(
+  isDealLobbyWaiting("join"),
+  false,
+  "the guest should see the room-code form before joining",
+);
+assert.equal(
+  isDealLobbyWaiting("client-wait"),
+  true,
+  "the guest should see the waiting state after submitting a room code",
+);
 
 function card(id, kind, extra = {}) {
   return { id, kind, name: id, value: 2, ...extra };
