@@ -40,10 +40,14 @@ import {
   paymentAssets,
   rentFor,
 } from "@/lib/dealhouse";
+import {
+  isDealLobbyWaiting,
+  type DealLobbyScreen,
+} from "@/lib/dealhouse-lobby";
 import type { PeerConnection, PeerData, PeerInstance } from "@/lib/peer-types";
 
 type Role = "host" | "client" | "local" | null;
-type Screen = "menu" | "host" | "join" | "game";
+type Screen = DealLobbyScreen;
 
 const ROOM_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
@@ -76,7 +80,6 @@ export default function DealhousePage() {
   const [game, setGame] = useState<DealState | null>(null);
   const [selectedCard, setSelectedCard] = useState<DealCard | null>(null);
   const [toast, setToast] = useState("");
-  const [remoteIntent, setRemoteIntent] = useState("");
   const [turnFlash, setTurnFlash] = useState(false);
   const [moveBurst, setMoveBurst] = useState<DealActivity | null>(null);
 
@@ -85,25 +88,17 @@ export default function DealhousePage() {
   const clientConnectionRef = useRef<PeerConnection | null>(null);
   const gameRef = useRef<DealState | null>(null);
   const lobbyRef = useRef<string[]>([]);
-  const playerIndexRef = useRef(0);
   const lastTurnRef = useRef<number | null>(null);
   const lastActivityRef = useRef<string | null>(null);
 
   useEffect(() => { gameRef.current = game; }, [game]);
   useEffect(() => { lobbyRef.current = lobbyPlayers; }, [lobbyPlayers]);
-  useEffect(() => { playerIndexRef.current = playerIndex; }, [playerIndex]);
 
   useEffect(() => {
     if (!toast) return;
     const timeout = window.setTimeout(() => setToast(""), 2400);
     return () => window.clearTimeout(timeout);
   }, [toast]);
-
-  useEffect(() => {
-    if (!remoteIntent) return;
-    const timeout = window.setTimeout(() => setRemoteIntent(""), 2200);
-    return () => window.clearTimeout(timeout);
-  }, [remoteIntent]);
 
   const perspective = game ? (role === "local" ? game.currentPlayer : playerIndex) : playerIndex;
 
@@ -168,13 +163,6 @@ export default function DealhousePage() {
     broadcast({ type: "state", game: result.state });
   }, [broadcast]);
 
-  const sendIntent = useCallback((message: string) => {
-    if (!game) return;
-    const payload = { type: "intent", player: perspective, message };
-    if (role === "host") broadcast(payload);
-    if (role === "client") clientConnectionRef.current?.send(payload);
-  }, [broadcast, game, perspective, role]);
-
   const perform = useCallback((action: DealAction) => {
     setSelectedCard(null);
     if (!gameRef.current) return;
@@ -210,10 +198,6 @@ export default function DealhousePage() {
     if (data.type === "action") {
       runHostAction(assignedPlayer, data.action as DealAction, connection);
       return;
-    }
-    if (data.type === "intent") {
-      setRemoteIntent(String(data.message ?? "Choosing a move…"));
-      broadcast(data);
     }
   }, [broadcast, name, runHostAction]);
 
@@ -259,7 +243,7 @@ export default function DealhousePage() {
     setRole("client");
     setActiveCode(code);
     setStatus("Finding that table…");
-    setScreen("join");
+    setScreen("client-wait");
     const peer = new window.Peer(undefined, { debug: 1 });
     peerRef.current = peer;
     peer.on("open", () => {
@@ -279,7 +263,6 @@ export default function DealhousePage() {
           setScreen("game");
         }
         if (data.type === "error") setToast(String(data.message));
-        if (data.type === "intent" && Number(data.player) !== playerIndexRef.current) setRemoteIntent(String(data.message));
         if (data.type === "full") setStatus("That table already has two players.");
       });
       connection.on("close", () => setStatus("The host closed this table."));
@@ -365,14 +348,9 @@ export default function DealhousePage() {
           role={role}
           roomCode={activeCode}
           selectedCard={selectedCard}
-          remoteIntent={remoteIntent}
-          onSelectCard={(card) => {
-            setSelectedCard(card);
-            sendIntent(`${game.players[perspective].name} is considering ${card.name}…`);
-          }}
-          onCloseCard={() => { setSelectedCard(null); sendIntent(""); }}
+          onSelectCard={setSelectedCard}
+          onCloseCard={() => setSelectedCard(null)}
           onAction={perform}
-          onIntent={sendIntent}
           onExit={exitGame}
         />
       )}
@@ -402,7 +380,7 @@ type LobbyProps = {
 };
 
 function DealLobby(props: LobbyProps) {
-  const isWaiting = props.screen === "host" || props.screen === "join";
+  const isWaiting = isDealLobbyWaiting(props.screen);
   return (
     <div className="dh-lobby-shell">
       <div className="dh-lobby-grid" aria-hidden />
@@ -467,11 +445,9 @@ type TableProps = {
   role: Role;
   roomCode: string;
   selectedCard: DealCard | null;
-  remoteIntent: string;
   onSelectCard(card: DealCard): void;
   onCloseCard(): void;
   onAction(action: DealAction): void;
-  onIntent(message: string): void;
   onExit(): void;
 };
 
@@ -506,9 +482,9 @@ function DealTable(props: TableProps) {
           <div className="dh-live-panel">
             <div className="dh-live-label"><i /> Live move</div>
             <AnimatePresence mode="wait">
-              <motion.div key={props.remoteIntent || latest?.id || "ready"} initial={{ opacity: 0, y: 7 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -7 }}>
-                <strong>{props.remoteIntent || latest?.title || "The table is ready"}</strong>
-                <span>{props.remoteIntent ? "You can see their decision taking shape." : latest?.detail || "Play a card to begin."}</span>
+              <motion.div key={latest?.id || "ready"} initial={{ opacity: 0, y: 7 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -7 }}>
+                <strong>{latest?.title || "The table is ready"}</strong>
+                <span>{latest?.detail || "Confirmed moves appear here."}</span>
               </motion.div>
             </AnimatePresence>
           </div>
@@ -545,14 +521,14 @@ function DealTable(props: TableProps) {
       </div>
 
       {game.phase === "paying" && game.pendingPayment && (
-        <PaymentSheet game={game} perspective={perspective} onAction={props.onAction} onIntent={props.onIntent} />
+        <PaymentSheet game={game} perspective={perspective} onAction={props.onAction} />
       )}
 
       {game.phase === "over" && <WinnerSheet game={game} perspective={perspective} onExit={props.onExit} />}
 
       <AnimatePresence>
         {props.selectedCard && (
-          <CardActionSheet game={game} playerIndex={perspective} card={props.selectedCard} onAction={props.onAction} onClose={props.onCloseCard} onIntent={props.onIntent} />
+          <CardActionSheet game={game} playerIndex={perspective} card={props.selectedCard} onAction={props.onAction} onClose={props.onCloseCard} />
         )}
       </AnimatePresence>
     </div>
@@ -630,7 +606,7 @@ function GameCard({ card, index = 0, compact = false, disabled = false, selected
   );
 }
 
-function CardActionSheet({ game, playerIndex, card, onAction, onClose, onIntent }: { game: DealState; playerIndex: number; card: DealCard; onAction(action: DealAction): void; onClose(): void; onIntent(message: string): void }) {
+function CardActionSheet({ game, playerIndex, card, onAction, onClose }: { game: DealState; playerIndex: number; card: DealCard; onAction(action: DealAction): void; onClose(): void }) {
   const player = game.players[playerIndex];
   const opponent = game.players[playerIndex === 0 ? 1 : 0];
   const [swapOwnId, setSwapOwnId] = useState("");
@@ -658,17 +634,17 @@ function CardActionSheet({ game, playerIndex, card, onAction, onClose, onIntent 
         {actionCard?.action === "collect" && <button className="dh-button dh-button--primary" onClick={() => playAction()}><HandCoins weight="bold" /> Collect 2M</button>}
 
         {actionCard?.action === "rent" && (
-          <div className="dh-choice-list"><span>Choose a district</span>{ownedGroups.length ? ownedGroups.map((group) => <button key={group} onMouseEnter={() => onIntent(`${player.name} is pricing ${GROUPS[group].name}…`)} onClick={() => playAction({ group })}><i className={`group-dot group-${group}`} /><b>{GROUPS[group].name}</b><small>{rentFor(player, group)}M rent</small><ArrowRight /></button>) : <p>Build a property before playing rent.</p>}</div>
+          <div className="dh-choice-list"><span>Choose a district</span>{ownedGroups.length ? ownedGroups.map((group) => <button key={group} onClick={() => playAction({ group })}><i className={`group-dot group-${group}`} /><b>{GROUPS[group].name}</b><small>{rentFor(player, group)}M rent</small><ArrowRight /></button>) : <p>Build a property before playing rent.</p>}</div>
         )}
 
         {actionCard?.action === "steal" && (
-          <div className="dh-choice-list"><span>Choose a rival property</span>{stealable.length ? stealable.map((property) => <button key={property.id} onMouseEnter={() => onIntent(`${player.name} is eyeing ${GROUPS[property.group].name}…`)} onClick={() => playAction({ targetCardId: property.id })}><i className={`group-dot group-${property.group}`} /><b>{GROUPS[property.group].name}</b><small>{property.value}M value</small><ArrowRight /></button>) : <p>No unprotected properties are available.</p>}</div>
+          <div className="dh-choice-list"><span>Choose a rival property</span>{stealable.length ? stealable.map((property) => <button key={property.id} onClick={() => playAction({ targetCardId: property.id })}><i className={`group-dot group-${property.group}`} /><b>{GROUPS[property.group].name}</b><small>{property.value}M value</small><ArrowRight /></button>) : <p>No unprotected properties are available.</p>}</div>
         )}
 
         {actionCard?.action === "swap" && (
           <div className="dh-swap-picker">
-            <div className="dh-choice-list"><span>Give one of yours</span>{tradeableOwn.map((property) => <button className={swapOwnId === property.id ? "selected" : ""} key={property.id} onClick={() => { setSwapOwnId(property.id); onIntent(`${player.name} selected ${GROUPS[property.group].name} to trade…`); }}><i className={`group-dot group-${property.group}`} /><b>{GROUPS[property.group].name}</b>{swapOwnId === property.id && <Check />}</button>)}</div>
-            <div className="dh-choice-list"><span>Take one of theirs</span>{stealable.map((property) => <button className={swapTargetId === property.id ? "selected" : ""} key={property.id} onClick={() => { setSwapTargetId(property.id); onIntent(`${player.name} is proposing a live swap…`); }}><i className={`group-dot group-${property.group}`} /><b>{GROUPS[property.group].name}</b>{swapTargetId === property.id && <Check />}</button>)}</div>
+            <div className="dh-choice-list"><span>Give one of yours</span>{tradeableOwn.map((property) => <button className={swapOwnId === property.id ? "selected" : ""} key={property.id} onClick={() => setSwapOwnId(property.id)}><i className={`group-dot group-${property.group}`} /><b>{GROUPS[property.group].name}</b>{swapOwnId === property.id && <Check />}</button>)}</div>
+            <div className="dh-choice-list"><span>Take one of theirs</span>{stealable.map((property) => <button className={swapTargetId === property.id ? "selected" : ""} key={property.id} onClick={() => setSwapTargetId(property.id)}><i className={`group-dot group-${property.group}`} /><b>{GROUPS[property.group].name}</b>{swapTargetId === property.id && <Check />}</button>)}</div>
             <button className="dh-button dh-button--primary" disabled={!swapOwnId || !swapTargetId} onClick={() => playAction({ ownCardId: swapOwnId, targetCardId: swapTargetId })}>Confirm swap <ArrowRight weight="bold" /></button>
           </div>
         )}
@@ -679,7 +655,7 @@ function CardActionSheet({ game, playerIndex, card, onAction, onClose, onIntent 
   );
 }
 
-function PaymentSheet({ game, perspective, onAction, onIntent }: { game: DealState; perspective: number; onAction(action: DealAction): void; onIntent(message: string): void }) {
+function PaymentSheet({ game, perspective, onAction }: { game: DealState; perspective: number; onAction(action: DealAction): void }) {
   const payment = game.pendingPayment!;
   const isPayer = perspective === payment.from;
   const payer = game.players[payment.from];
@@ -701,7 +677,7 @@ function PaymentSheet({ game, perspective, onAction, onIntent }: { game: DealSta
             <div className="dh-payment-assets">
               {assets.map(({ card, zone }) => {
                 const isSelected = payment.selectedAssetIds.includes(card.id);
-                return <button key={card.id} className={`${isSelected ? "selected" : ""} ${card.kind === "property" ? `group-${card.group}` : ""}`} onClick={() => { onAction({ type: "togglePayment", cardId: card.id }); onIntent(`${payer.name} selected a ${zone} card to pay…`); }}><span>{card.value}M</span><b>{card.kind === "property" ? GROUPS[card.group].name : card.name}</b><small>{zone}</small>{isSelected && <Check weight="bold" />}</button>;
+                return <button key={card.id} className={`${isSelected ? "selected" : ""} ${card.kind === "property" ? `group-${card.group}` : ""}`} onClick={() => onAction({ type: "togglePayment", cardId: card.id })}><span>{card.value}M</span><b>{card.kind === "property" ? GROUPS[card.group].name : card.name}</b><small>{zone}</small>{isSelected && <Check weight="bold" />}</button>;
               })}
             </div>
             <button className="dh-button dh-button--primary" disabled={selectedValue < required} onClick={() => onAction({ type: "confirmPayment" })}>Pay {selectedValue}M <ArrowRight weight="bold" /></button>
