@@ -248,6 +248,22 @@ input::placeholder{color:var(--ink-faint);}
 
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(18px);z-index:80;background:#ffffff;border:1px solid var(--gold-line);color:var(--ink);padding:12px 18px;border-radius:12px;font-size:14px;opacity:0;transition:opacity .22s var(--e-out),transform .22s var(--e-out);pointer-events:none;box-shadow:var(--shadow);max-width:90vw;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.turnflash-gw{position:fixed;left:50%;top:50%;z-index:95;min-width:min(86vw,340px);padding:19px 21px;display:flex;align-items:center;gap:14px;
+  transform:translate(-50%,-50%) scale(.9);opacity:0;filter:blur(7px);pointer-events:none;
+  border:1px solid var(--gold-line);border-radius:18px;background:rgba(255,255,255,.94);box-shadow:0 28px 90px rgba(28,30,45,.28),0 0 50px rgba(191,148,54,.16);
+  backdrop-filter:blur(18px);transition:opacity .2s var(--e-out),transform .28s var(--e-out),filter .22s var(--e-out);}
+.turnflash-gw.show{opacity:1;filter:blur(0);transform:translate(-50%,-50%) scale(1);}
+.turnflash-gw .tf-gem{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:rgba(191,148,54,.12);font-size:25px;color:var(--gold-deep);}
+.turnflash-gw small{display:block;margin-bottom:3px;color:var(--ink-faint);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;}
+.turnflash-gw strong{display:block;font-size:20px;letter-spacing:-.02em;}
+.live-move-gw{position:fixed;right:18px;top:66px;z-index:75;width:min(310px,calc(100vw - 36px));padding:12px 14px;display:flex;align-items:center;gap:11px;
+  transform:translateY(-12px);opacity:0;pointer-events:none;border:1px solid var(--hair-2);border-radius:13px;background:rgba(255,255,255,.92);box-shadow:0 16px 44px rgba(28,30,45,.18);backdrop-filter:blur(15px);
+  transition:opacity .22s var(--e-out),transform .26s var(--e-out);}
+.live-move-gw.show{opacity:1;transform:translateY(0);}
+.live-move-gw .lm-chip{width:36px;height:36px;flex:0 0 auto;display:grid;place-items:center;border-radius:10px;color:var(--gold-deep);background:rgba(191,148,54,.11);font-weight:800;}
+.live-move-gw div{min-width:0;display:grid;gap:2px;}
+.live-move-gw strong,.live-move-gw span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.live-move-gw strong{font-size:12px;}.live-move-gw span{color:var(--ink-faint);font-size:10px;}
 
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.001ms !important;transition-duration:.08s !important;}
@@ -378,6 +394,8 @@ input::placeholder{color:var(--ink-faint);}
 </div>
 
 <div class="toast" id="toast"></div>
+<div class="turnflash-gw" id="turnFlashGw"><span class="tf-gem">◆</span><div><small>Table ready</small><strong id="turnFlashName">Your turn</strong></div></div>
+<div class="live-move-gw" id="liveMoveGw"><span class="lm-chip">↗</span><div><strong id="liveMoveTitle">Move played</strong><span id="liveMoveDetail">The board updated live.</span></div></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"></script>
@@ -809,6 +827,7 @@ function jewelEl(c, px, cls){ const s=document.createElement("span"); s.classNam
 
 let role=null, me=0, g=null, roomCode=null, peer=null, conns=[], lobbyNames=[];
 let pick={colors:[]};
+let lastRenderedTurn=null, lastRenderedAction=null, turnFlashTimer=null, liveMoveTimer=null;
 
 const SCREENS=["menu","host","join","local","game","over"];
 function show(name){ SCREENS.forEach(s=>$("#screen-"+s).classList.toggle("hidden",s!==name)); window.scrollTo(0,0); }
@@ -897,9 +916,22 @@ function dispatch(action){
 }
 function hostApplyAction(actingIndex,action){
   if(!g) return; if(actingIndex!==g.current) return;
+  const move=describeMove(actingIndex,action);
   const res=applyToEngine(action);
   if(!res||!res.ok){ if(res&&res.error&&(role==="local"||actingIndex===me)) toast(res.error); return; }
+  g.liveSeq=(g.liveSeq||0)+1;
+  g.liveAction={id:g.liveSeq,actor:actingIndex,title:move.title,detail:move.detail};
   broadcastState(); render(); if(g.phase==="over") showOver();
+}
+function describeMove(actingIndex,a){
+  const name=(g.players[actingIndex]&&g.players[actingIndex].name)||"A player";
+  if(a.kind==="takeThree") return {title:name+" collected gems",detail:a.colors.map(c=>GEMNAME[c]).join(", ")+" moved from the treasury."};
+  if(a.kind==="takeTwo") return {title:name+" collected a pair",detail:"Two "+GEMNAME[a.color]+" gems moved live."};
+  if(a.kind==="discard") return {title:name+" returned a gem",detail:GEMNAME[a.color]+" went back to the treasury."};
+  if(a.kind==="reserve") return {title:name+" reserved a card",detail:"A development card moved into reserve."};
+  if(a.kind==="purchase") return {title:name+" commissioned a card",detail:"Gems were paid and a permanent bonus was added."};
+  if(a.kind==="pass") return {title:name+" passed",detail:"The table moves to the next player."};
+  return {title:name+" made a move",detail:"The board updated live."};
 }
 function applyToEngine(a){
   switch(a.kind){
@@ -913,10 +945,31 @@ function applyToEngine(a){
 }
 function broadcastState(){ if(role!=="host") return; conns.forEach(c=>{ try{ c.conn.send({type:"state",g}); }catch(e){} }); }
 
-function enterGame(){ pick={colors:[]}; $("#bank").innerHTML=""; show("game"); $("#gameRoom").innerHTML=role==="local"?"":('Room <b>'+esc(roomCode)+'</b>'); render(); }
+function enterGame(){ pick={colors:[]}; lastRenderedTurn=null; lastRenderedAction=null; $("#bank").innerHTML=""; show("game"); $("#gameRoom").innerHTML=role==="local"?"":('Room <b>'+esc(roomCode)+'</b>'); render(); }
 function activePlayerIsControllable(){ return role==="local" ? true : (g.current===me); }
 
-function render(){ if(!g) return; renderTurnbar(); renderNobles(); renderMarket(); renderBank(); renderPlayers(); renderTray(); }
+function render(){ if(!g) return; renderTurnbar(); renderNobles(); renderMarket(); renderBank(); renderPlayers(); renderTray(); renderLiveFeedback(); }
+
+function renderLiveFeedback(){
+  if(lastRenderedTurn!==g.current){
+    const initial=lastRenderedTurn===null; lastRenderedTurn=g.current;
+    if(activePlayerIsControllable()&&g.phase!=="over") setTimeout(()=>showTurnFlashGw(role==="local"?g.players[g.current].name:"You"),initial?180:0);
+  }
+  if(g.liveAction&&g.liveAction.id!==lastRenderedAction){
+    lastRenderedAction=g.liveAction.id;
+    const title=(g.liveAction.actor===me&&role!=="local")?g.liveAction.title.replace(g.players[me].name,"You"):g.liveAction.title;
+    showLiveMoveGw(title,g.liveAction.detail);
+  }
+}
+function showTurnFlashGw(name){
+  const el=$("#turnFlashGw"); $("#turnFlashName").textContent=name==="You"?"Your turn.":name+", your turn.";
+  clearTimeout(turnFlashTimer); el.classList.add("show"); turnFlashTimer=setTimeout(()=>el.classList.remove("show"),1000);
+}
+function showLiveMoveGw(title,detail){
+  const el=$("#liveMoveGw"); $("#liveMoveTitle").textContent=title; $("#liveMoveDetail").textContent=detail;
+  clearTimeout(liveMoveTimer); el.classList.remove("show"); requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add("show")));
+  liveMoveTimer=setTimeout(()=>el.classList.remove("show"),1900);
+}
 
 function renderTurnbar(){
   const cur=g.players[g.current]; const tb=$("#turnbar"); const mine=activePlayerIsControllable()&&g.phase!=="over";
