@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CardsThree, Diamond, Lightning, UsersThree } from "@phosphor-icons/react";
+import { ArrowRight, CardsThree, ChatTeardropText, Diamond, Lightning, UsersThree } from "@phosphor-icons/react";
 import { motion } from "motion/react";
 import { ArcadeMark } from "@/components/arcade-mark";
 import { PointerGlow } from "@/components/pointer-glow";
@@ -24,6 +24,15 @@ const games = [
     meta: "2 players",
     Icon: CardsThree,
     art: "deal",
+  },
+  {
+    href: "/cave-poetry",
+    eyebrow: "One-beat words",
+    title: "Cave Poetry",
+    description: "Give tiny clues, chase the full phrase, and Bonk your way to a big score.",
+    meta: "2 players",
+    Icon: ChatTeardropText,
+    art: "cave",
   },
 ] as const;
 
@@ -74,8 +83,10 @@ export default function Home() {
               <div className={`game-art game-art--${game.art}`} aria-hidden>
                 {game.art === "gem" ? (
                   <><span className="facet facet-a" /><span className="facet facet-b" /><span className="facet facet-c" /></>
-                ) : (
+                ) : game.art === "deal" ? (
                   <><span className="tower tower-a" /><span className="tower tower-b" /><span className="tower tower-c" /><span className="road" /></>
+                ) : (
+                  <><span className="cave-ring cave-ring-a" /><span className="cave-ring cave-ring-b" /><span className="cave-word cave-word-a">1</span><span className="cave-word cave-word-b">3</span></>
                 )}
                 <game.Icon className="art-icon" weight="duotone" />
                 <span className="live-chip"><i /> Online</span>
