@@ -527,19 +527,17 @@ input[type=text]:focus{border-color:rgba(255,98,93,.68);box-shadow:0 0 0 3px rgb
   .noble .rq{gap:2px;font-size:12px;}
   .noble .rq .jw{width:15px!important;height:15px!important;}
   .tier{height:clamp(82px,14vh,108px);gap:4px;}
-  .cards{gap:4px;}
-  .deck{border-radius:8px;}
-  .deck .dt{font-size:12px;}
-  .deck .dc{font-size:8px;}
+  .tier>.deck{display:none;}
+  .cards{width:100%;gap:5px;}
   .card{border-radius:9px;}
   .chead{min-height:26px;padding:4px;}
   .chead .cpts{font-size:17px;line-height:1;}
   .chead .cbonus{width:18px!important;height:18px!important;}
-  .cbody{padding:4px;}
-  .cost{gap:2px;}
-  .cg{gap:1px;}
-  .cg .jw{width:12px!important;height:12px!important;}
-  .cg b{font-size:11px;}
+  .cbody{align-items:center;justify-content:center;padding:7px 4px 5px;}
+  .cost{justify-content:center;gap:3px;}
+  .cg{flex:0 0 auto;gap:2px;padding:3px 4px;border:1px solid rgba(255,255,255,.07);border-radius:7px;background:rgba(255,255,255,.035);}
+  .cg .jw{width:15px!important;height:15px!important;}
+  .cg b{font-size:12px;}
   .treasury{gap:4px;}
   .bank{gap:3px;}
   .gemrow{position:relative;min-height:34px;padding:2px 25px 2px 3px;justify-content:center;border-radius:10px;}
