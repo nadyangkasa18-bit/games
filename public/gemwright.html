@@ -281,11 +281,11 @@ input::placeholder{color:var(--ink-faint);}
 
 body{
   font-family:"Geist",ui-sans-serif,system-ui,-apple-system,sans-serif;
-  letter-spacing:-.012em;
+  letter-spacing:-.008em;
   background:
-    radial-gradient(circle at 50% -8%,rgba(255,98,93,.11),transparent 28%),
-    radial-gradient(ellipse at 86% 8%,rgba(92,98,255,.07),transparent 34%),
-    linear-gradient(180deg,#0d0d11 0%,#08080b 100%);
+    radial-gradient(circle at 50% -8%,rgba(255,98,93,.075),transparent 28%),
+    radial-gradient(ellipse at 82% 12%,rgba(255,255,255,.035),transparent 36%),
+    linear-gradient(180deg,#0e0e12 0%,#09090c 100%);
 }
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.14;
@@ -318,9 +318,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-o
 .menu-card>*{position:relative;}
 .crest{width:66px;height:66px;margin:7px auto 20px;filter:drop-shadow(0 14px 30px rgba(255,98,93,.2));}
 .brand{
-  font-size:clamp(48px,13vw,66px);font-weight:650;letter-spacing:-.065em;
+  font-size:clamp(46px,12vw,63px);font-weight:590;letter-spacing:-.058em;
   background:linear-gradient(180deg,#fff 18%,#8d8c95 100%);-webkit-background-clip:text;background-clip:text;
 }
+h1,h2,h3{font-weight:580;}
 .tagline{
   margin:14px 0 30px;color:#8d8c95;font-family:"Geist Mono",monospace;
   font-size:9px;font-weight:600;letter-spacing:.16em;
@@ -334,7 +335,11 @@ input[type=text]{
 }
 input[type=text]:hover{background:rgba(0,0,0,.35);border-color:var(--hair-2);}
 input[type=text]:focus{border-color:rgba(255,98,93,.68);box-shadow:0 0 0 3px rgba(255,98,93,.12);}
-.btn{min-height:48px;padding:0 16px;border-radius:12px;font-size:14px;font-weight:610;}
+.btn{min-height:48px;padding:0 16px;border-radius:12px;font-size:14px;font-weight:560;}
+.seg button{font-weight:540;}
+.note b{font-weight:560;}
+.codebox{font-weight:620;}
+.lobby-list li{font-weight:540;}
 .btn-gold{
   color:#260707;background:linear-gradient(180deg,#ff7c77,#ff625d);
   box-shadow:0 13px 34px rgba(255,98,93,.2),inset 0 1px rgba(255,255,255,.28);
@@ -365,7 +370,7 @@ input[type=text]:focus{border-color:rgba(255,98,93,.68);box-shadow:0 0 0 3px rgb
   min-height:48px;padding:8px 15px;background:rgba(18,18,23,.88);border-color:var(--hair);
   box-shadow:inset 0 1px rgba(255,255,255,.035);backdrop-filter:blur(22px);
 }
-.turnbar .who{font-weight:600;letter-spacing:-.025em;}
+.turnbar .who{font-weight:540;letter-spacing:-.018em;}
 .turnbar .who b,.turnbar .rc b{color:#ff817c;}
 .turnbar .prompt{color:#9a99a2;}
 .turnbar .rc,.plabel,.treasury .tt{font-family:"Geist Mono",monospace;font-size:9px;font-weight:600;}
@@ -382,12 +387,12 @@ input[type=text]:focus{border-color:rgba(255,98,93,.68);box-shadow:0 0 0 3px rgb
 .plabel .meta{color:#65646d;font-family:"Geist",sans-serif;}
 
 .noble{
-  background:linear-gradient(145deg,#1c1b20,#141419);border-color:rgba(228,182,88,.2);
+  background:linear-gradient(145deg,#1a1a20,#141419);border-color:rgba(255,255,255,.1);
   box-shadow:0 8px 22px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.045);
 }
-.noble .np{color:#f1c96e;font-weight:650;}
-.noble .np small{color:#706f78;font-family:"Geist Mono",monospace;}
-.noble .rq{color:#ecebf0;}
+.noble .np{color:#d8d7dc;font-weight:580;}
+.noble .np small{color:#706f78;font-family:"Geist Mono",monospace;font-weight:550;}
+.noble .rq{color:#ecebf0;font-weight:560;}
 
 .tier{gap:7px;}
 .deck{
@@ -401,28 +406,35 @@ input[type=text]:focus{border-color:rgba(255,98,93,.68);box-shadow:0 0 0 3px rgb
 .card{
   background:linear-gradient(160deg,#1d1d24,#121217);border-color:rgba(255,255,255,.09);
   box-shadow:0 9px 24px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.045);
-  transition:transform .28s var(--e-out),box-shadow .28s var(--e-out),border-color .2s;
+  transition:transform .18s var(--e-out),box-shadow .2s var(--e-out),border-color .16s;
 }
 @media (hover:hover) and (pointer:fine){
-  .card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.18);box-shadow:0 18px 36px rgba(0,0,0,.42),0 0 0 1px rgba(255,98,93,.05);}
+  .card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.18);box-shadow:0 18px 36px rgba(0,0,0,.42),0 0 0 1px rgba(255,98,93,.05);}
 }
 .card.afford{border-color:rgba(255,98,93,.7);box-shadow:0 0 0 1px rgba(255,98,93,.52),0 14px 30px rgba(255,98,93,.12);}
 .chead{border-bottom:1px solid rgba(0,0,0,.18);}
-.chead .cpts{font-weight:650;text-shadow:0 1px 6px rgba(0,0,0,.25);}
+.chead .cpts{font-weight:580;text-shadow:0 1px 6px rgba(0,0,0,.25);}
 .cbody{background:linear-gradient(180deg,rgba(255,255,255,.018),rgba(255,255,255,.035));}
-.cg b{color:#efedf1;font-weight:650;}
+.cg b{color:#efedf1;font-weight:560;}
 .card.empty{background:rgba(255,255,255,.015);border-color:var(--hair);}
 .card.empty .es{font-family:"Geist Mono",monospace;}
 
 .treasury{background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.02));}
 .gemrow{border-radius:12px;}
 @media (hover:hover) and (pointer:fine){.gemrow.pickable:hover{background:rgba(255,255,255,.055);}}
-.gemrow.sel{background:rgba(255,98,93,.1);box-shadow:inset 0 0 0 1px rgba(255,98,93,.7);}
+.gemrow.sel{background:rgba(255,98,93,.105);box-shadow:inset 0 0 0 1px rgba(255,98,93,.72),0 0 24px rgba(255,98,93,.08);transform:scale(1.025);}
 .pile .jw svg{filter:drop-shadow(0 5px 6px rgba(0,0,0,.52));}
+.pile .jw{transition:opacity .18s var(--e-out),transform .18s var(--e-out);}
+.pile .jw.entering{opacity:0;transform:scale(.92) translateY(-4px);}
+.pile .jw.leaving{opacity:0;transform:scale(.94) translateY(-5px);}
 .pile .empslot{border-color:rgba(255,255,255,.14);}
 .tsel{border-color:var(--hair);}
 .tsel .msg{color:#777680;}
 .tsel .btn{min-height:38px;}
+.tsel .picks:not(:empty){min-height:40px;padding:4px 10px;border:1px solid rgba(255,98,93,.22);border-radius:12px;background:rgba(255,98,93,.055);}
+.tsel .picks:not(:empty)::before{content:"Your pick";align-self:center;margin-right:2px;color:#8f8e97;font-family:"Geist Mono",monospace;font-size:8px;font-weight:550;letter-spacing:.1em;text-transform:uppercase;}
+.tsel .picks .jw{transform:scale(1.12);margin-inline:2px;}
+.tsel .picks .jw:active{transform:scale(1.02);}
 
 /* player state */
 .players{gap:7px;}
@@ -431,14 +443,14 @@ input[type=text]:focus{border-color:rgba(255,98,93,.68);box-shadow:0 0 0 3px rgb
   box-shadow:inset 0 1px rgba(255,255,255,.035);
 }
 .pcard.turn{border-color:rgba(255,98,93,.45);box-shadow:0 0 0 1px rgba(255,98,93,.08),0 10px 26px rgba(0,0,0,.2);}
-.pcard .pname{font-weight:600;}
-.pcard .youtag{color:#fff;background:rgba(255,98,93,.16);border:1px solid rgba(255,98,93,.27);}
-.pcard .pscore{color:#ff817c;font-weight:650;}
+.pcard .pname{font-weight:540;}
+.pcard .youtag{color:#fff;background:rgba(255,98,93,.14);border:1px solid rgba(255,98,93,.24);font-weight:580;}
+.pcard .pscore{color:#ff817c;font-weight:580;}
 .mlab,.pcard .pscore small,.pfoot .gc{color:#6f6e78;font-family:"Geist Mono",monospace;}
-.sw{border-color:rgba(255,255,255,.13);font-weight:650;box-shadow:inset 0 1px rgba(255,255,255,.12);}
+.sw{border-color:rgba(255,255,255,.13);font-weight:560;box-shadow:inset 0 1px rgba(255,255,255,.12);}
 .sw.z{color:#65646d;background:rgba(255,255,255,.025);border-color:var(--hair);box-shadow:none;}
 .rcard{background:rgba(255,255,255,.025);border-color:var(--hair);}
-.op{font-weight:650;}
+.op{font-weight:560;}
 .op-w{border-color:#a6b4c4;color:#cdd5de}.op-u{border-color:#4b8ad0;color:#6da6e5}
 .op-g{border-color:#35ac74;color:#55c38c}.op-r{border-color:#d45466;color:#ec7182}.op-k{border-color:#686a75;color:#a2a3ad}
 
@@ -448,7 +460,7 @@ input[type=text]:focus{border-color:rgba(255,98,93,.68);box-shadow:0 0 0 3px rgb
   background:linear-gradient(145deg,#1b1b21,#111116);border-color:var(--hair-2);border-radius:20px;
   box-shadow:0 42px 120px rgba(0,0,0,.65),inset 0 1px rgba(255,255,255,.06);
 }
-.modal h3{color:#f6f5f2;font-weight:620;}
+.modal h3{color:#f6f5f2;font-weight:560;}
 .modal .msub{color:#898892;}
 .modal .mcard .card:hover,.modal .mcard .card:active{box-shadow:0 14px 34px rgba(0,0,0,.45);}
 .pay .cg b{color:#f6f5f2;}.pay .gold-need b{color:#f1c96e;}
@@ -461,19 +473,27 @@ input[type=text]:focus{border-color:rgba(255,98,93,.68);box-shadow:0 0 0 3px rgb
   box-shadow:0 34px 110px rgba(0,0,0,.65),0 0 70px rgba(255,98,93,.12),inset 0 1px rgba(255,255,255,.06);
 }
 .turnflash-gw .tf-gem{color:#ff817c;background:rgba(255,98,93,.12);border:1px solid rgba(255,98,93,.18);}
-.turnflash-gw small{color:#76757e;font-family:"Geist Mono",monospace;}
-.turnflash-gw strong{color:#fff;font-weight:600;}
+.turnflash-gw small{color:#76757e;font-family:"Geist Mono",monospace;font-weight:550;}
+.turnflash-gw strong{color:#fff;font-weight:540;}
 .live-move-gw{
+  width:min(430px,calc(100vw - 36px));
   border-color:var(--hair-2);background:rgba(22,22,28,.94);
   box-shadow:0 20px 60px rgba(0,0,0,.5),inset 0 1px rgba(255,255,255,.05);
 }
-.live-move-gw .lm-chip{color:#ff817c;background:rgba(255,98,93,.11);}
+.live-move-gw .lm-chip{color:#ff817c;background:rgba(255,98,93,.09);font-weight:560;}
 .live-move-gw span{color:#85848d;}
+.live-move-gw .lm-gems{display:flex;align-items:center;gap:3px;margin-left:5px;}
+.live-move-gw .lm-gems:empty{display:none;}
+.live-move-gw .lm-gems .jw{animation:gem-confirm .22s var(--e-out) both;}
+.live-move-gw .lm-gems .jw:nth-child(2){animation-delay:35ms;}
+.live-move-gw .lm-gems .jw:nth-child(3){animation-delay:70ms;}
+@keyframes gem-confirm{from{opacity:0;transform:translateY(7px) scale(.94);}to{opacity:1;transform:translateY(0) scale(1);}}
 
-.over h1{background:linear-gradient(180deg,#fff,#94939b);-webkit-background-clip:text;background-clip:text;}
+.plabel,.treasury .tt{font-weight:550;}
+.over h1{font-weight:600;background:linear-gradient(180deg,#fff,#94939b);-webkit-background-clip:text;background-clip:text;}
 .rank li{background:linear-gradient(145deg,#18181e,#111116);border-color:var(--hair);}
 .rank li.win{border-color:rgba(255,98,93,.42);box-shadow:0 0 0 1px rgba(255,98,93,.08);}
-.rank li .pos{color:#ff817c;}.rank li .rp small{color:#777680;}
+.rank li .pos{color:#ff817c;font-weight:580;}.rank li .rn{font-weight:540;}.rank li .rp{font-weight:580;}.rank li .rp small{color:#777680;}
 
 @media (max-width:720px){
   .game{padding:7px;gap:6px;}
@@ -620,7 +640,7 @@ input[type=text]:focus{border-color:rgba(255,98,93,.68);box-shadow:0 0 0 3px rgb
 
 <div class="toast" id="toast"></div>
 <div class="turnflash-gw" id="turnFlashGw"><span class="tf-gem">◆</span><div><small>Table ready</small><strong id="turnFlashName">Your turn</strong></div></div>
-<div class="live-move-gw" id="liveMoveGw"><span class="lm-chip">↗</span><div><strong id="liveMoveTitle">Move played</strong><span id="liveMoveDetail">The board updated live.</span></div></div>
+<div class="live-move-gw" id="liveMoveGw"><span class="lm-chip">↗</span><div><strong id="liveMoveTitle">Move played</strong><span id="liveMoveDetail">The board updated live.</span></div><div class="lm-gems" id="liveMoveGems"></div></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"></script>
@@ -1145,14 +1165,14 @@ function hostApplyAction(actingIndex,action){
   const res=applyToEngine(action);
   if(!res||!res.ok){ if(res&&res.error&&(role==="local"||actingIndex===me)) toast(res.error); return; }
   g.liveSeq=(g.liveSeq||0)+1;
-  g.liveAction={id:g.liveSeq,actor:actingIndex,title:move.title,detail:move.detail};
+  g.liveAction={id:g.liveSeq,actor:actingIndex,title:move.title,detail:move.detail,gems:move.gems||[]};
   broadcastState(); render(); if(g.phase==="over") showOver();
 }
 function describeMove(actingIndex,a){
   const name=(g.players[actingIndex]&&g.players[actingIndex].name)||"A player";
-  if(a.kind==="takeThree") return {title:name+" collected gems",detail:a.colors.map(c=>GEMNAME[c]).join(", ")+" moved from the treasury."};
-  if(a.kind==="takeTwo") return {title:name+" collected a pair",detail:"Two "+GEMNAME[a.color]+" gems moved live."};
-  if(a.kind==="discard") return {title:name+" returned a gem",detail:GEMNAME[a.color]+" went back to the treasury."};
+  if(a.kind==="takeThree") return {title:name+" collected gems",detail:a.colors.map(c=>GEMNAME[c]).join(", ")+" moved from the treasury.",gems:a.colors};
+  if(a.kind==="takeTwo") return {title:name+" collected a pair",detail:"Two "+GEMNAME[a.color]+" gems moved live.",gems:[a.color,a.color]};
+  if(a.kind==="discard") return {title:name+" returned a gem",detail:GEMNAME[a.color]+" went back to the treasury.",gems:[a.color]};
   if(a.kind==="reserve") return {title:name+" reserved a card",detail:"A development card moved into reserve."};
   if(a.kind==="purchase") return {title:name+" commissioned a card",detail:"Gems were paid and a permanent bonus was added."};
   if(a.kind==="pass") return {title:name+" passed",detail:"The table moves to the next player."};
@@ -1183,17 +1203,18 @@ function renderLiveFeedback(){
   if(g.liveAction&&g.liveAction.id!==lastRenderedAction){
     lastRenderedAction=g.liveAction.id;
     const title=(g.liveAction.actor===me&&role!=="local")?g.liveAction.title.replace(g.players[me].name,"You"):g.liveAction.title;
-    showLiveMoveGw(title,g.liveAction.detail);
+    showLiveMoveGw(title,g.liveAction.detail,g.liveAction.gems||[]);
   }
 }
 function showTurnFlashGw(name){
   const el=$("#turnFlashGw"); $("#turnFlashName").textContent=name==="You"?"Your turn.":name+", your turn.";
   clearTimeout(turnFlashTimer); el.classList.add("show"); turnFlashTimer=setTimeout(()=>el.classList.remove("show"),1000);
 }
-function showLiveMoveGw(title,detail){
+function showLiveMoveGw(title,detail,gems){
   const el=$("#liveMoveGw"); $("#liveMoveTitle").textContent=title; $("#liveMoveDetail").textContent=detail;
+  $("#liveMoveGems").innerHTML=(gems||[]).map(c=>jewel(c,30)).join("");
   clearTimeout(liveMoveTimer); el.classList.remove("show"); requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add("show")));
-  liveMoveTimer=setTimeout(()=>el.classList.remove("show"),1900);
+  liveMoveTimer=setTimeout(()=>el.classList.remove("show"),2400);
 }
 
 function renderTurnbar(){
@@ -1262,7 +1283,7 @@ function syncPile(pile,c,n){
     for(let i=live.length;i<n;i++){ const j=jewelEl(c,GEMPX,"entering"); pile.appendChild(j);
       requestAnimationFrame(()=>requestAnimationFrame(()=>j.classList.remove("entering"))); }
   } else if(n<live.length){
-    for(let i=0;i<live.length-n;i++){ const j=live[live.length-1-i]; j.classList.add("leaving"); setTimeout(()=>{ if(j.parentNode) j.remove(); },260); }
+    for(let i=0;i<live.length-n;i++){ const j=live[live.length-1-i]; j.classList.add("leaving"); setTimeout(()=>{ if(j.parentNode) j.remove(); },200); }
   }
   if(n===0 && !pile.querySelector(".empslot") && !pile.querySelector(".jw:not(.leaving)")){
     const e=document.createElement("span"); e.className="empslot"; pile.appendChild(e);

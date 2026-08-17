@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CardsThree, Diamond, Lightning, UsersThree } from "@phosphor-icons/react";
+import { ArrowRight, CardsThree, ChatTeardropText, Diamond, ForkKnife, Lightning, UsersThree } from "@phosphor-icons/react";
 import { motion } from "motion/react";
 import { ArcadeMark } from "@/components/arcade-mark";
 import { PointerGlow } from "@/components/pointer-glow";
@@ -24,6 +24,24 @@ const games = [
     meta: "2 players",
     Icon: CardsThree,
     art: "deal",
+  },
+  {
+    href: "/cave-poetry",
+    eyebrow: "One-beat words",
+    title: "Cave Poetry",
+    description: "Give tiny clues, chase the full phrase, and Bonk your way to a big score.",
+    meta: "2 players",
+    Icon: ChatTeardropText,
+    art: "cave",
+  },
+  {
+    href: "/sushi-loop",
+    eyebrow: "Hidden drafting",
+    title: "Sushi Loop",
+    description: "Pick in secret, reveal together, and pass the hand around the table.",
+    meta: "2 players",
+    Icon: ForkKnife,
+    art: "sushi",
   },
 ] as const;
 
@@ -74,8 +92,12 @@ export default function Home() {
               <div className={`game-art game-art--${game.art}`} aria-hidden>
                 {game.art === "gem" ? (
                   <><span className="facet facet-a" /><span className="facet facet-b" /><span className="facet facet-c" /></>
-                ) : (
+                ) : game.art === "deal" ? (
                   <><span className="tower tower-a" /><span className="tower tower-b" /><span className="tower tower-c" /><span className="road" /></>
+                ) : game.art === "cave" ? (
+                  <><span className="cave-ring cave-ring-a" /><span className="cave-ring cave-ring-b" /><span className="cave-word cave-word-a">1</span><span className="cave-word cave-word-b">3</span></>
+                ) : (
+                  <><span className="sushi-card sushi-card-a" /><span className="sushi-card sushi-card-b" /><span className="sushi-card sushi-card-c" /><span className="sushi-belt" /></>
                 )}
                 <game.Icon className="art-icon" weight="duotone" />
                 <span className="live-chip"><i /> Online</span>

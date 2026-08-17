@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test:engine": "node --experimental-strip-types scripts/smoke-engine.mjs"
+    "test:engine": "node --experimental-strip-types scripts/smoke-engine.mjs && node --experimental-strip-types scripts/smoke-poetry.mjs && node --experimental-strip-types scripts/smoke-sushi.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "2.1.10",

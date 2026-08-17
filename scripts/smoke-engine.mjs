@@ -1,9 +1,22 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   applyDealAction,
   completedGroups,
   createDealGame,
 } from "../lib/dealhouse.ts";
+import { isDealLobbyWaiting } from "../lib/dealhouse-lobby.ts";
+
+assert.equal(
+  isDealLobbyWaiting("join"),
+  false,
+  "the guest should see the room-code form before joining",
+);
+assert.equal(
+  isDealLobbyWaiting("client-wait"),
+  true,
+  "the guest should see the waiting state after submitting a room code",
+);
 
 function card(id, kind, extra = {}) {
   return { id, kind, name: id, value: 2, ...extra };
@@ -64,5 +77,9 @@ game = result.state;
 assert.equal(completedGroups(game.players[0]), 3);
 assert.equal(game.phase, "over");
 assert.equal(game.winner, 0);
+
+const dealhousePage = readFileSync(new URL("../app/dealhouse/page.tsx", import.meta.url), "utf8");
+assert.doesNotMatch(dealhousePage, /type:\s*["']intent["']/, "unconfirmed card intent must never be broadcast");
+assert.doesNotMatch(dealhousePage, /is considering|is pricing|is eyeing/, "the live panel must only describe confirmed moves");
 
 console.log("Dealhouse engine smoke test passed");
