@@ -155,7 +155,7 @@ input::placeholder{color:var(--ink-faint);}
 .treasury{display:flex;flex-direction:column;gap:8px;min-height:0;}
 .treasury .tt{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;flex:0 0 auto;}
 .bank{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:5px;}
-.gemrow{flex:1 1 0;min-height:32px;display:flex;align-items:center;justify-content:center;border-radius:13px;padding:2px 6px;border:1px solid transparent;
+.gemrow{position:relative;flex:1 1 0;min-height:32px;display:flex;align-items:center;justify-content:center;border-radius:13px;padding:2px 30px 2px 6px;border:1px solid transparent;
   transition:box-shadow .18s var(--e-out),background .18s var(--e-out),transform .12s var(--e-out);}
 .gemrow.pickable{cursor:pointer;}
 .gemrow.pickable:active{transform:scale(.985);}
@@ -168,6 +168,8 @@ input::placeholder{color:var(--ink-faint);}
 .pile .jw.entering{opacity:0;transform:scale(.5) translateY(-6px);}
 .pile .jw.leaving{opacity:0;transform:scale(.4) translateY(-10px);pointer-events:none;}
 .pile .empslot{width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--hair-2);}
+.gemcount{position:absolute;right:5px;top:50%;width:23px;height:23px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.13);border-radius:8px;color:var(--ink);background:rgba(255,255,255,.05);font-family:"Geist Mono",monospace;font-size:10px;font-weight:600;transform:translateY(-50%);box-shadow:inset 0 1px rgba(255,255,255,.06);}
+.gemrow.sel .gemcount{color:#fff;background:rgba(255,98,93,.2);border-color:rgba(255,98,93,.42);}
 
 /* players row */
 .players{flex:0 0 auto;display:flex;gap:8px;}
@@ -507,7 +509,64 @@ input[type=text]:focus{border-color:rgba(255,98,93,.68);box-shadow:0 0 0 3px rgb
 
 @media (max-width:520px){
   .menu-card{padding:46px 22px 26px;border-radius:22px;}
-  .game{min-width:430px;overflow:auto;}
+  .game{width:100%;min-width:0;padding:6px;gap:6px;overflow:hidden;}
+  .turnbar{min-height:56px;padding:7px 10px;gap:7px;border-radius:12px;}
+  .turnbar .who{font-size:15px;white-space:nowrap;}
+  .turnbar .prompt{max-width:none;font-size:10px;line-height:1.25;}
+  .turnbar .rc{font-size:7px;letter-spacing:.1em;}
+  .gmain{grid-template-columns:minmax(0,1fr) 102px;gap:5px;}
+  .board-col{gap:5px;}
+  .panel{padding:6px;border-radius:12px;}
+  .plabel,.treasury .tt{margin-bottom:5px;font-size:7px;letter-spacing:.11em;}
+  .plabel .meta{font-size:7px;letter-spacing:0;}
+  .nobles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;}
+  .noble{min-width:0;padding:6px;border-radius:10px;gap:5px;justify-content:flex-start;}
+  .noble .np{font-size:20px;}
+  .noble .np small{font-size:6px;margin-top:2px;letter-spacing:.08em;}
+  .noble .nreq{min-width:0;gap:3px;flex-wrap:wrap;}
+  .noble .rq{gap:2px;font-size:12px;}
+  .noble .rq .jw{width:15px!important;height:15px!important;}
+  .tier{height:clamp(82px,14vh,108px);gap:4px;}
+  .cards{gap:4px;}
+  .deck{border-radius:8px;}
+  .deck .dt{font-size:12px;}
+  .deck .dc{font-size:8px;}
+  .card{border-radius:9px;}
+  .chead{min-height:26px;padding:4px;}
+  .chead .cpts{font-size:17px;line-height:1;}
+  .chead .cbonus{width:18px!important;height:18px!important;}
+  .cbody{padding:4px;}
+  .cost{gap:2px;}
+  .cg{gap:1px;}
+  .cg .jw{width:12px!important;height:12px!important;}
+  .cg b{font-size:11px;}
+  .treasury{gap:4px;}
+  .bank{gap:3px;}
+  .gemrow{position:relative;min-height:34px;padding:2px 25px 2px 3px;justify-content:center;border-radius:10px;}
+  .pile{min-height:28px;justify-content:flex-start;}
+  .pile .jw{width:25px!important;height:25px!important;margin-left:-14px;}
+  .pile .jw:first-child{margin-left:0;}
+  .gemcount{position:absolute;right:4px;top:50%;width:20px;height:20px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.13);border-radius:7px;color:#f6f5f2;background:rgba(0,0,0,.28);font-family:"Geist Mono",monospace;font-size:9px;font-weight:600;transform:translateY(-50%);box-shadow:inset 0 1px rgba(255,255,255,.06);}
+  .gemrow.sel .gemcount{color:#fff;background:rgba(255,98,93,.2);border-color:rgba(255,98,93,.42);}
+  .tsel{height:clamp(104px,16vh,126px);padding-top:7px;gap:5px;}
+  .tsel .msg{font-size:8px;line-height:1.25;}
+  .tsel .btn{min-height:32px;padding:6px;font-size:10px;}
+  .tsel .picks:not(:empty){min-height:30px;padding:2px 5px;}
+  .tsel .picks:not(:empty)::before{display:none;}
+  .tsel .picks .jw{width:22px!important;height:22px!important;}
+  .players{gap:5px;}
+  .pcard{padding:7px 6px;border-radius:12px;}
+  .pcard .ph{gap:4px;margin-bottom:6px;}
+  .pcard .pname{font-size:12px;}
+  .pcard .youtag{padding:2px 5px;font-size:7px;}
+  .pcard .pscore{font-size:19px;}
+  .pcard .pscore small{font-size:6px;}
+  .pmatrix{gap:4px;}
+  .mrow{gap:3px;}
+  .mlab{width:26px;font-size:7px;}
+  .sw{max-width:23px;font-size:9px;}
+  .pfoot{margin-top:5px;}
+  .pfoot .gc{font-size:8px;}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -1267,11 +1326,14 @@ function renderBank(){
   E.ALL.forEach(c=>{
     let row=box.querySelector('.gemrow[data-c="'+c+'"]');
     if(!row){ row=document.createElement("div"); row.className="gemrow"; row.dataset.c=c;
-      const pile=document.createElement("div"); pile.className="pile"; row.appendChild(pile); box.appendChild(row); }
+      const pile=document.createElement("div"); pile.className="pile"; row.appendChild(pile);
+      const count=document.createElement("span"); count.className="gemcount"; row.appendChild(count); box.appendChild(row); }
     const canPick=canTurn&&c!=="gold";
     row.classList.toggle("pickable",canPick);
     row.classList.toggle("sel",pick.colors.indexOf(c)>=0);
     row.onclick=canPick?(()=>pickGem(c)):null;
+    row.querySelector(".gemcount").textContent=g.bank[c];
+    row.setAttribute("aria-label",g.bank[c]+" "+GEMNAME[c]+" gems available");
     syncPile(row.querySelector(".pile"),c,g.bank[c]);
   });
 }
