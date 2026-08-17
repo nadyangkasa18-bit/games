@@ -538,6 +538,11 @@ input[type=text]:focus{border-color:rgba(255,98,93,.68);box-shadow:0 0 0 3px rgb
   .cg{flex:0 0 auto;gap:2px;padding:3px 4px;border:1px solid rgba(255,255,255,.07);border-radius:7px;background:rgba(255,255,255,.035);}
   .cg .jw{width:15px!important;height:15px!important;}
   .cg b{font-size:12px;}
+  .cost:has(.cg:nth-child(3)){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;}
+  .cost:has(.cg:nth-child(3)) .cg{width:100%;justify-content:center;padding:3px 1px;}
+  .cost:has(.cg:nth-child(3)) .cg .jw{width:13px!important;height:13px!important;}
+  .cost:has(.cg:nth-child(3)) .cg b{font-size:11px;}
+  .cost:has(.cg:nth-child(4)){grid-template-columns:repeat(2,minmax(0,1fr));max-width:82px;}
   .treasury{gap:4px;}
   .bank{gap:3px;}
   .gemrow{position:relative;min-height:34px;padding:2px 25px 2px 3px;justify-content:center;border-radius:10px;}
