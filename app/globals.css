@@ -378,6 +378,10 @@
     .game-tile { min-height: 500px; }
   }
 
+  @media (max-width: 760px) {
+    .frame-status { display: none; }
+  }
+
   @media (max-width: 540px) {
     .arcade-shell { padding-inline: 16px; }
     .private-pill { display: none; }
