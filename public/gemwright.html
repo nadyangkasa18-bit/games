@@ -217,7 +217,8 @@ input::placeholder{color:var(--ink-faint);}
 .tsel .picks .jw{cursor:pointer;transition:transform .14s var(--e-out);}
 .tsel .picks .jw svg{filter:drop-shadow(0 2px 3px rgba(22,24,32,.28));}
 .tsel .picks .jw:active{transform:scale(.88);}
-.tsel .btn{width:100%;padding:11px;font-size:13.5px;}
+.tsel .tactions{display:flex;width:100%;gap:8px;align-items:stretch;}
+.tsel .btn{flex:1 1 0;min-width:0;padding:11px;font-size:13.5px;}
 .tsel .btn-ghost{padding:8px;font-size:12px;}
 
 /* modal */
@@ -553,6 +554,7 @@ input[type=text]:focus{border-color:rgba(255,98,93,.68);box-shadow:0 0 0 3px rgb
   .gemrow.sel .gemcount{color:#fff;background:rgba(255,98,93,.2);border-color:rgba(255,98,93,.42);}
   .tsel{height:clamp(104px,16vh,126px);padding-top:7px;gap:5px;}
   .tsel .msg{font-size:8px;line-height:1.25;}
+  .tsel .tactions{gap:5px;}
   .tsel .btn{min-height:32px;padding:6px;font-size:10px;}
   .tsel .picks:not(:empty){min-height:30px;padding:2px 5px;}
   .tsel .picks:not(:empty)::before{display:none;}
@@ -678,9 +680,11 @@ input[type=text]:focus{border-color:rgba(255,98,93,.68);box-shadow:0 0 0 3px rgb
         <div class="tsel">
           <div class="msg" id="trayMsg"></div>
           <div class="picks" id="trayPicks"></div>
-          <button class="btn btn-gold" id="btnConfirm" style="display:none;">Take</button>
-          <button class="btn btn-ghost" id="btnClear" style="display:none;">Clear</button>
-          <button class="btn btn-gold" id="btnPass" style="display:none;">Pass turn</button>
+          <div class="tactions">
+            <button class="btn btn-gold" id="btnConfirm" style="display:none;">Take</button>
+            <button class="btn btn-ghost" id="btnClear" style="display:none;">Clear</button>
+            <button class="btn btn-gold" id="btnPass" style="display:none;">Pass turn</button>
+          </div>
         </div>
       </div>
     </div>
