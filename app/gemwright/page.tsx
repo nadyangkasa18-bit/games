@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
+import { GemwrightFrame } from "@/components/gemwright-frame";
 
 export const metadata = {
   title: "Gemwright",
@@ -16,7 +17,10 @@ export default function GemwrightPage() {
         <strong>Gemwright</strong>
         <span className="frame-status"><i /> Room-ready</span>
       </header>
-      <iframe className="gemwright-frame" src={`${basePath}/gemwright.html`} title="Gemwright game" allow="clipboard-write" />
+      <GemwrightFrame
+        src={`${basePath}/gemwright.html`}
+        themeHref={`${basePath}/gemwright-theme.css`}
+      />
     </main>
   );
 }
