@@ -1,4 +1,5 @@
 import "./sushi-loop.css";
+import "../game-theme.css";
 
 export const metadata = {
   title: "Sushi Loop",

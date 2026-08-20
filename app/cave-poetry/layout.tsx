@@ -1,4 +1,5 @@
 import "./cave-poetry.css";
+import "../game-theme.css";
 
 export const metadata = {
   title: "Cave Poetry",
