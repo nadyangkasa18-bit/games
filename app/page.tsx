@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import { ArcadeMark } from "@/components/arcade-mark";
 import { PointerGlow } from "@/components/pointer-glow";
 import { IllustratedGameArt, TableDoodleScene } from "@/components/illustrated-game-art";
+import "./illustration-fixes.css";
 
 const games = [
   {

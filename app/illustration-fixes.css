@@ -1,0 +1,7 @@
+@layer components {
+  @media (hover: hover) and (pointer: fine) {
+    .game-tile:hover .illustrated-game-art {
+      transform: translate(-50%, -50%) scale(1.035) rotate(-1deg);
+    }
+  }
+}
