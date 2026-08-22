@@ -32,6 +32,7 @@ import {
   type SushiKind,
 } from "@/lib/sushi-loop";
 import type { PeerConnection, PeerData, PeerInstance } from "@/lib/peer-types";
+import { GameDoodleLayer, InGameIllustration } from "@/components/in-game-illustrations";
 
 type Role = "host" | "client" | "local" | null;
 type Screen = "menu" | "join" | "host" | "client-wait" | "game";
@@ -289,7 +290,7 @@ function SushiLobby(props: LobbyProps) {
       <header className="sl-nav"><Link href="/"><ArrowLeft /> Game shelf</Link><span><ForkKnife weight="duotone" /> SUSHI LOOP</span></header>
       <section className="sl-lobby-card">
         {!waiting && <>
-          <div className="sl-brand-art" aria-hidden><i /><i /><i /><span>3</span></div>
+          <div className="sl-brand-art game-state-art" aria-hidden><InGameIllustration kind="sushi" moment="lobby" /></div>
           <div className="sl-eyebrow"><ArrowsLeftRight /> Pick · reveal · pass</div>
           <h1>Draft dinner.<br /><span>Serve a win.</span></h1>
           <p>Choose one card in secret. When both players lock in, the picks flip up together and the hands trade sides.</p>
@@ -308,6 +309,7 @@ function SushiLobby(props: LobbyProps) {
           </div>}
         </>}
         {waiting && <div className="sl-waiting">
+          <div className="game-state-art game-state-art--compact"><InGameIllustration kind="sushi" moment="waiting" /></div>
           <div className="sl-wait-art"><i /><i /><i /></div>
           <div className="sl-eyebrow"><span /> Private table live</div>
           <h1>{props.screen === "host" ? "Save the other seat." : "Seat found."}</h1>
@@ -347,6 +349,7 @@ function SushiTable({ game, role, perspective, roomCode, onAction, onRestart, on
   const opponentLocked = Boolean(game.selected[opponent]);
 
   return <div className="sl-table-shell">
+    <GameDoodleLayer kind="sushi" />
     {game.phase === "drafting" && !myLocked && <div className="sl-turn-flash" key={`${game.round}-${game.turn}`}><span>YOUR PICK</span><strong>Choose one. Keep it secret.</strong></div>}
     <header className="sl-table-nav"><button className="sl-icon-button" onClick={onExit} aria-label="Leave game"><SignOut /></button><div><ForkKnife weight="duotone" /><strong>Sushi Loop</strong><span>{roomCode || "Practice draft"}</span></div><small><i /> {role === "local" ? "Table bot" : "Live room"}</small></header>
     <main className="sl-table-grid">
@@ -372,18 +375,19 @@ function SushiTable({ game, role, perspective, roomCode, onAction, onRestart, on
         <Tableau cards={game.tableaus[perspective]} />
       </section>
     </main>
-    <AnimatePresence>{game.lastReveal && <motion.div className="sl-live-reveal" key={game.lastReveal.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}><div><Sparkle weight="duotone" /><span><small>Both picks revealed</small><strong>{game.lastReveal.text}</strong></span></div><div className="sl-reveal-cards">{game.lastReveal.cards.map((card) => <SushiCardView card={card} small key={card.id} />)}</div></motion.div>}</AnimatePresence>
+    <AnimatePresence>{game.lastReveal && <motion.div className="sl-live-reveal" key={game.lastReveal.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}><InGameIllustration kind="sushi" moment="action" /><div><Sparkle weight="duotone" /><span><small>Both picks revealed</small><strong>{game.lastReveal.text}</strong></span></div><div className="sl-reveal-cards">{game.lastReveal.cards.map((card) => <SushiCardView card={card} small key={card.id} />)}</div></motion.div>}</AnimatePresence>
   </div>;
 }
 
 function Tableau({ cards }: { cards: SushiCard[] }) {
-  return <div className="sl-tableau"><div className="sl-tableau-label"><span>Plate</span><small>{cards.length} cards</small></div><div>{cards.length ? cards.map((card) => <SushiCardView card={card} small key={card.id} />) : <span className="sl-empty-plate">First pick lands here</span>}</div></div>;
+  return <div className="sl-tableau"><div className="sl-tableau-label"><span>Plate</span><small>{cards.length} cards</small></div><div>{cards.length ? cards.map((card) => <SushiCardView card={card} small key={card.id} />) : <span className="sl-empty-plate illustrated-empty"><InGameIllustration kind="sushi" moment="empty" /><span>First pick lands here</span></span>}</div></div>;
 }
 
 function ScoreState({ game, role, perspective, onAction, onRestart }: { game: SushiGame; role: Role; perspective: 0 | 1; onAction(action: SushiAction): void; onRestart(): void }) {
   const opponent = perspective === 0 ? 1 : 0;
   const winner = game.scores[0] === game.scores[1] ? null : game.scores[0] > game.scores[1] ? 0 : 1;
   return <motion.section className="sl-score-state" key={game.phase} initial={{ opacity: 0, scale: .97 }} animate={{ opacity: 1, scale: 1 }}>
+    <div className="game-state-art"><InGameIllustration kind="sushi" moment="score" /></div>
     <div className="sl-score-icon"><Sparkle weight="duotone" /></div>
     <span>{game.phase === "finished" ? "Three rounds complete" : `Round ${game.round} plated`}</span>
     <h2>{game.phase === "finished" ? winner === null ? "Perfect tie." : `${game.players[winner]} wins dinner.` : "Count the plates."}</h2>

@@ -33,6 +33,7 @@ import {
   type PoetrySpice,
 } from "@/lib/cave-poetry";
 import type { PeerConnection, PeerData, PeerInstance } from "@/lib/peer-types";
+import { GameDoodleLayer, InGameIllustration } from "@/components/in-game-illustrations";
 
 type Role = "host" | "client" | "local" | null;
 type Screen = "menu" | "join" | "host" | "client-wait" | "game";
@@ -379,7 +380,7 @@ function PoetryLobby(props: LobbyProps) {
       <section className="cp-lobby-card">
         {!isWaiting && (
           <>
-            <div className="cp-brand-art" aria-hidden><span>1</span><Waveform weight="duotone" /><span>3</span></div>
+            <div className="cp-brand-art game-state-art" aria-hidden><InGameIllustration kind="cave" moment="lobby" /></div>
             <div className="cp-eyebrow"><Lightning weight="fill" /> One-beat word game</div>
             <h1>Small words.<br /><span>Big brain.</span></h1>
             <p className="cp-lede">Give clues using only one-syllable words. Find the word for 1 point, the full phrase for 3, or take the Bonk.</p>
@@ -427,6 +428,7 @@ function PoetryLobby(props: LobbyProps) {
 
         {isWaiting && (
           <div className="cp-waiting">
+            <div className="game-state-art game-state-art--compact"><InGameIllustration kind="cave" moment="waiting" /></div>
             <div className="cp-wait-icon"><span /><Hammer weight="duotone" /></div>
             <div className="cp-eyebrow"><i /> Private cave open</div>
             <h1>{props.screen === "host" ? "Call in your tribe." : "You found the cave."}</h1>
@@ -479,6 +481,7 @@ function PoetryTable({ game, role, perspective, roomCode, onAction, onRestart, o
 
   return (
     <div className="cp-table-shell">
+      <GameDoodleLayer kind="cave" />
       <header className="cp-table-nav">
         <button className="cp-icon-button" onClick={onExit} aria-label="Leave game"><SignOut /></button>
         <div className="cp-table-title"><Hammer weight="duotone" /><strong>Cave Poetry</strong><span>{roomCode || "Pass & play"}</span></div>
@@ -530,6 +533,7 @@ function PoetryTable({ game, role, perspective, roomCode, onAction, onRestart, o
                 </motion.article>
               ) : game.phase === "playing" ? (
                 <motion.div className="cp-hidden-card" key="hidden" initial={{ opacity: 0, scale: .97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}>
+                  <div className="game-state-art game-state-art--compact"><InGameIllustration kind="cave" moment="waiting" /></div>
                   <div className="cp-sound-wave"><i /><i /><i /><i /><i /></div>
                   <EyeSlash weight="duotone" />
                   <h2>Eyes off the card.</h2>
@@ -552,6 +556,7 @@ function PoetryTable({ game, role, perspective, roomCode, onAction, onRestart, o
           <div className="cp-panel-label"><i /> Live cave</div>
           <AnimatePresence mode="wait">
             <motion.div className={`cp-latest ${game.lastMove?.kind || "idle"}`} key={game.lastMove?.id || `${game.phase}-${game.round}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}>
+              {game.lastMove?.kind === "bonk" && <InGameIllustration kind="cave" moment="action" />}
               {game.lastMove?.kind === "bonk" ? <Hammer weight="duotone" /> : game.lastMove?.kind === "flip" ? <ArrowsClockwise /> : <Lightning weight="duotone" />}
               <strong>{game.lastMove?.text || (game.phase === "playing" ? "Words are in flight" : "Ready for the next round")}</strong>
               <span>{game.lastMove?.kind === "flip" ? "A new prompt is now face-up." : `Round score ${game.roundScore >= 0 ? "+" : ""}${game.roundScore}`}</span>
@@ -577,6 +582,7 @@ function RoundState({ game, isPoet, role, onAction, onRestart }: {
     const winner = game.teamScores[0] > game.teamScores[1] ? game.settings.teamNames[0] : game.settings.teamNames[1];
     return (
       <motion.section className="cp-round-state" key="finished" initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }}>
+        <div className="game-state-art"><InGameIllustration kind="cave" moment="score" /></div>
         <div className="cp-state-icon"><Sparkle weight="duotone" /></div>
         <div className="cp-eyebrow">Six rounds complete</div>
         <h2>{tied ? "Cave calls it even." : `${winner} wins.`}</h2>
@@ -589,6 +595,7 @@ function RoundState({ game, isPoet, role, onAction, onRestart }: {
   if (game.phase === "round-end") {
     return (
       <motion.section className="cp-round-state" key="round-end" initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }}>
+        <div className="game-state-art game-state-art--compact"><InGameIllustration kind="cave" moment="score" /></div>
         <div className="cp-state-icon"><Timer weight="duotone" /></div>
         <div className="cp-eyebrow">Time. Cave goes quiet.</div>
         <h2>{game.roundScore >= 0 ? "+" : ""}{game.roundScore} for {game.settings.teamNames[game.poet]}.</h2>
@@ -600,6 +607,7 @@ function RoundState({ game, isPoet, role, onAction, onRestart }: {
 
   return (
     <motion.section className="cp-round-state" key="ready" initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }}>
+      <div className="game-state-art game-state-art--compact"><InGameIllustration kind="cave" moment="lobby" /></div>
       <div className="cp-state-icon"><Waveform weight="duotone" /></div>
       <div className="cp-eyebrow">Round {game.round} · roles set</div>
       <h2>{isPoet ? "You make word." : "You guess word."}</h2>

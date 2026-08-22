@@ -45,6 +45,7 @@ import {
   type DealLobbyScreen,
 } from "@/lib/dealhouse-lobby";
 import type { PeerConnection, PeerData, PeerInstance } from "@/lib/peer-types";
+import { GameDoodleLayer, InGameIllustration } from "@/components/in-game-illustrations";
 
 type Role = "host" | "client" | "local" | null;
 type Screen = DealLobbyScreen;
@@ -392,7 +393,7 @@ function DealLobby(props: LobbyProps) {
       <section className="dh-lobby-card">
         {!isWaiting && (
           <>
-            <div className="dh-brand-art" aria-hidden><span /><span /><span /><Buildings weight="duotone" /></div>
+            <div className="dh-brand-art game-state-art" aria-hidden><InGameIllustration kind="deal" moment="lobby" /></div>
             <div className="dh-eyebrow"><Lightning weight="fill" /> Live property card game</div>
             <h1>Build the city.<br /><span>Break the deal.</span></h1>
             <p className="dh-lede">Complete three districts before your rival. Bank cards, charge rent, and watch every move cross the table in real time.</p>
@@ -421,6 +422,7 @@ function DealLobby(props: LobbyProps) {
 
         {isWaiting && (
           <div className="dh-waiting">
+            <div className="game-state-art game-state-art--compact"><InGameIllustration kind="deal" moment="waiting" /></div>
             <div className="dh-wait-icon"><span /><UsersThree weight="duotone" /></div>
             <div className="dh-eyebrow"><i /> Private table open</div>
             <h1>{props.screen === "host" ? "Invite your rival." : "You’re at the table."}</h1>
@@ -462,6 +464,7 @@ function DealTable(props: TableProps) {
 
   return (
     <div className="dh-table-shell">
+      <GameDoodleLayer kind="deal" />
       <header className="dh-table-nav">
         <button onClick={props.onExit} className="dh-icon-button" aria-label="Leave game"><ArrowLeft weight="bold" /></button>
         <div className="dh-table-title"><Buildings weight="duotone" /><strong>Dealhouse</strong>{props.roomCode && <span>Room {props.roomCode}</span>}{props.role === "local" && <span>Pass & play</span>}</div>
@@ -556,7 +559,7 @@ function PlayerAssets({ player, concealed = false }: { player: DealPlayer; conce
           if (cards.length === 0) return null;
           return <PropertyStack key={group} group={group} cards={cards} complete={groupIsComplete(player, group)} concealed={concealed} />;
         })}
-        {GROUP_ORDER.every((group) => player.properties[group].length === 0) && <div className="dh-empty-zone">No districts built yet</div>}
+        {GROUP_ORDER.every((group) => player.properties[group].length === 0) && <div className="dh-empty-zone illustrated-empty"><InGameIllustration kind="deal" moment="empty" /><span>No districts built yet</span></div>}
       </div>
       <div className="dh-bank-stack" aria-label={`${bankTotal(player)} million in bank`}>
         {player.bank.slice(-5).map((card, index) => <span key={card.id} style={{ transform: `translate(${index * 3}px, ${index * -2}px)` }}>{card.value}M</span>)}
@@ -668,6 +671,7 @@ function PaymentSheet({ game, perspective, onAction }: { game: DealState; perspe
   return (
     <div className="dh-sheet-backdrop dh-payment-backdrop">
       <motion.section className="dh-payment-sheet" initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }}>
+        <div className="game-state-art game-state-art--compact"><InGameIllustration kind="deal" moment="action" /></div>
         <div className="dh-payment-icon"><HandCoins weight="duotone" /></div>
         <div className="dh-eyebrow">{payment.reason}</div>
         <h2>{isPayer ? `Choose ${required}M to pay` : `${payer.name} is choosing payment`}</h2>
@@ -694,6 +698,7 @@ function WinnerSheet({ game, perspective, onExit }: { game: DealState; perspecti
   return (
     <div className="dh-sheet-backdrop dh-winner-backdrop">
       <motion.section className="dh-winner-sheet" initial={{ opacity: 0, scale: .92, y: 18 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ type: "spring", stiffness: 250, damping: 22 }}>
+        <div className="game-state-art"><InGameIllustration kind="deal" moment="score" /></div>
         <div className="dh-win-mark"><Buildings weight="duotone" /><Sparkle weight="fill" /></div>
         <div className="dh-eyebrow">City complete</div>
         <h2>{winner.id === perspective ? "You win." : `${winner.name} wins.`}</h2>
@@ -716,6 +721,7 @@ function TurnFlash({ name }: { name: string }) {
 function MoveBurst({ activity, fromMe }: { activity: DealActivity; fromMe: boolean }) {
   return (
     <motion.div className={`dh-move-burst ${fromMe ? "from-me" : "from-them"}`} initial={{ opacity: 0, y: fromMe ? 160 : -160, rotate: fromMe ? -8 : 8, scale: .7 }} animate={{ opacity: [0, 1, 1, 0], y: [fromMe ? 160 : -160, 0, 0, fromMe ? -130 : 130], rotate: [fromMe ? -8 : 8, 0, 0, fromMe ? 5 : -5], scale: [.7, 1, 1, .82] }} transition={{ duration: 1.35, times: [0, .2, .72, 1], ease: [0.22, 1, 0.36, 1] }}>
+      <InGameIllustration kind="deal" moment="action" />
       {activity.visual === "money" ? <HandCoins weight="duotone" /> : activity.visual === "property" ? <Buildings weight="duotone" /> : <CardsThree weight="duotone" />}
       <span>{activity.title}</span>
     </motion.div>

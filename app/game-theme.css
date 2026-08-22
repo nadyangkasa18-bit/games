@@ -231,3 +231,28 @@
     }
   }
 }
+
+@layer components {
+  .in-game-illustration{width:min(100%,260px);height:auto;overflow:visible;color:#bda888;filter:drop-shadow(0 18px 24px rgba(0,0,0,.22));}
+  .ig-line{fill:none;stroke:#bda888;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.ig-ink{stroke:#3a3128}.ig-faint{opacity:.32}
+  .ig-fill{stroke:#3a3128;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.ig-paper{fill:#efe3cf}.ig-ochre{fill:#d7a45f}.ig-coral{fill:#d97051}.ig-jade{fill:#84b58d}.ig-violet{fill:#9875b2}.ig-ink-fill{fill:#3a3128}
+  .ig-word{fill:#efe3cf;font-family:var(--font-editorial),Georgia,serif;font-size:18px;font-style:italic}.ig-reveal{stroke:#d7a45f;stroke-width:2.6}.ig-spark{transform-box:fill-box;transform-origin:center}
+  .game-state-art{position:relative;width:min(100%,300px);margin:0 auto 14px;display:grid;place-items:center;pointer-events:none}.game-state-art--compact{width:150px;margin-bottom:4px}.game-state-art--compact .in-game-illustration{width:150px}
+  .game-doodle-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;opacity:.48}.game-doodle-layer span{position:absolute;width:84px;height:44px;border:1px solid rgba(239,227,207,.1);border-color:rgba(239,227,207,.1) transparent transparent;border-radius:50%}.game-doodle-layer span:nth-child(1){left:4%;top:19%;transform:rotate(-9deg)}.game-doodle-layer span:nth-child(2){right:5%;top:38%;transform:rotate(12deg)}.game-doodle-layer span:nth-child(3){left:31%;bottom:8%;transform:rotate(-4deg)}.game-doodle-layer i{position:absolute;width:6px;height:6px;border:1px solid rgba(215,164,95,.5);transform:rotate(45deg)}.game-doodle-layer i:nth-of-type(1){left:8%;top:48%}.game-doodle-layer i:nth-of-type(2){right:9%;top:17%}.game-doodle-layer--deal span{border-top-style:dashed}.game-doodle-layer--cave span{border-width:2px;border-color:rgba(215,164,95,.12) transparent transparent}.game-doodle-layer--sushi span{width:112px;border-color:rgba(132,181,141,.12) transparent transparent}
+  .illustrated-empty{min-height:88px;display:grid;grid-template-columns:78px 1fr;align-items:center;gap:12px;color:inherit}.illustrated-empty .in-game-illustration{width:86px}
+  .ig-reaction{transform-box:fill-box;transform-origin:center;animation:ig-reaction .55s cubic-bezier(.22,1,.36,1) both}.ig-club{transform-box:fill-box;transform-origin:50% 90%;animation:ig-club .5s cubic-bezier(.22,1,.36,1) both}.ig-steam{stroke-dasharray:32;animation:ig-line-draw .8s ease-out both}.in-game-illustration--score .ig-spark,.in-game-illustration--action .ig-spark{animation:ig-twinkle .7s ease-out both}
+  @keyframes ig-reaction{0%{transform:translateY(5px) rotate(-2deg) scale(.9);opacity:.2}65%{transform:translateY(-3px) rotate(1deg) scale(1.04)}100%{transform:none;opacity:1}}
+  @keyframes ig-club{0%{transform:rotate(-18deg)}60%{transform:rotate(8deg)}100%{transform:rotate(0)}}
+  @keyframes ig-line-draw{from{stroke-dashoffset:32;opacity:.2}to{stroke-dashoffset:0;opacity:1}}
+  @keyframes ig-twinkle{0%{opacity:0;transform:scale(.5) rotate(-8deg)}70%{opacity:1;transform:scale(1.15) rotate(3deg)}100%{transform:none}}
+  @media (prefers-reduced-motion:reduce){.ig-reaction,.ig-club,.ig-steam,.ig-spark{animation:none!important}}
+
+  .dh-table-shell,.cp-table-shell,.sl-table-shell{position:relative;isolation:isolate}.dh-table-shell>:not(.game-doodle-layer),.cp-table-shell>:not(.game-doodle-layer),.sl-table-shell>:not(.game-doodle-layer){position:relative;z-index:1}
+  .dh-brand-art.game-state-art,.cp-brand-art.game-state-art,.sl-brand-art.game-state-art{height:auto;min-height:174px;padding:6px;margin:0 auto 18px}.dh-brand-art .in-game-illustration,.cp-brand-art .in-game-illustration,.sl-brand-art .in-game-illustration{width:min(100%,250px)}
+  .dh-move-burst .in-game-illustration{position:absolute;width:94px;left:50%;top:50%;transform:translate(-50%,-56%);opacity:.24;z-index:-1}.dh-move-burst>svg:not(.in-game-illustration){position:relative}
+  .cp-latest .in-game-illustration{width:105px;margin:-10px auto -2px}.cp-latest.bonk>svg:not(.in-game-illustration){display:none}
+  .sl-live-reveal>.in-game-illustration{width:112px;flex:0 0 auto;margin:-16px -8px -16px -20px}
+  .dh-empty-zone.illustrated-empty{padding:4px 10px}.sl-empty-plate.illustrated-empty{width:100%;min-height:76px;padding:0 8px;text-align:left}.sl-empty-plate.illustrated-empty>span{font-style:normal}
+  .dh-payment-sheet .game-state-art{margin-top:-10px}.dh-winner-sheet .game-state-art,.cp-round-state .game-state-art,.sl-score-state .game-state-art{max-height:150px;overflow:hidden}.dh-winner-sheet .game-state-art .in-game-illustration,.cp-round-state .game-state-art .in-game-illustration,.sl-score-state .game-state-art .in-game-illustration{max-height:148px}
+  @media(max-width:700px){.game-doodle-layer{opacity:.28}.dh-brand-art.game-state-art,.cp-brand-art.game-state-art,.sl-brand-art.game-state-art{min-height:145px}.sl-live-reveal>.in-game-illustration{width:78px;margin:-10px -4px -10px -12px}.illustrated-empty{grid-template-columns:58px 1fr}.illustrated-empty .in-game-illustration{width:64px}.dh-winner-sheet .game-state-art,.cp-round-state .game-state-art,.sl-score-state .game-state-art{max-height:112px}.game-state-art--compact{width:120px}.game-state-art--compact .in-game-illustration{width:120px}}
+}
