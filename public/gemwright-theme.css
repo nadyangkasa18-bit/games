@@ -81,6 +81,45 @@ input[type=text]:focus{border-color:rgba(215,164,95,.62);box-shadow:0 0 0 3px rg
 .lobby-list li{background:rgba(239,227,207,.028);border-color:rgba(239,227,207,.09);}
 .lobby-list li.host .dot{background:var(--gold);box-shadow:0 0 9px rgba(215,164,95,.58);}
 
+/* The lobby is part of the jeweler's table, not a generic setup form. */
+.gw-lobby-illustration{
+  position:relative;
+  height:132px;
+  margin:-8px -8px 20px;
+  overflow:hidden;
+  border:1px solid rgba(239,227,207,.095);
+  border-radius:22px 17px 24px 18px / 18px 23px 17px 22px;
+  background:
+    radial-gradient(circle at 48% 45%,rgba(215,164,95,.11),transparent 31%),
+    linear-gradient(155deg,rgba(239,227,207,.045),rgba(0,0,0,.12));
+  box-shadow:inset 0 1px rgba(255,255,255,.03);
+}
+.gw-lobby-illustration::before{
+  content:"JEWELER'S BENCH";
+  position:absolute;left:14px;bottom:10px;z-index:1;
+  color:#746d63;font-family:"Geist Mono",monospace;font-size:7px;font-weight:650;letter-spacing:.18em;
+}
+.gw-lobby-illustration svg{display:block;width:100%;height:100%;overflow:visible;transform:rotate(-.25deg)}
+.gw-lobby-illustration .gw-sketch,.gw-lobby-illustration .gw-spark{
+  fill:none;stroke:#8d806f;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;
+}
+.gw-lobby-illustration .gw-faint{opacity:.34}
+.gw-lobby-illustration .gw-tray{fill:#17130e;stroke:#a08867;stroke-width:2.25;stroke-linejoin:round}
+.gw-lobby-illustration .gw-gem{stroke:#352c23;stroke-width:2.25;stroke-linejoin:round}
+.gw-lobby-illustration .gw-gem-coral{fill:#d97051}.gw-lobby-illustration .gw-gem-jade{fill:#84b58d}.gw-lobby-illustration .gw-gem-blue{fill:#6e86c8}
+.gw-lobby-illustration .gw-paper-shape{fill:#efe3cf;stroke:#3a3128;stroke-width:2.25;stroke-linejoin:round}
+.gw-lobby-illustration .gw-tool-shape{fill:#d7a45f;stroke:#3a3128;stroke-width:2.25;stroke-linejoin:round}
+.gw-lobby-illustration .gw-dot{fill:#d7a45f;opacity:.7}
+.gw-lobby-illustration .gw-spark{stroke:#d7a45f}
+.menu-card .field{position:relative}
+.menu-card .field::after{content:"";position:absolute;right:12px;bottom:17px;width:16px;height:10px;border:1.5px solid rgba(215,164,95,.34);border-left:0;border-bottom:0;transform:skew(-14deg) rotate(2deg);pointer-events:none}
+.menu-card .note{position:relative;padding-left:48px}
+.menu-card .note::before{content:"";position:absolute;left:15px;top:16px;width:18px;height:18px;border:1.7px solid #d7a45f;border-radius:50% 45% 48% 42%;box-shadow:7px 7px 0 -5px #d7a45f;transform:rotate(-8deg);opacity:.72}
+.menu-card .btn-gold{position:relative;overflow:hidden}
+.menu-card .btn-gold::after{content:"✦";position:absolute;right:17px;top:50%;transform:translateY(-50%) rotate(9deg);font-size:11px;color:#6f5632;opacity:.72}
+.menu-card .btn-ghost:nth-of-type(even){transform:rotate(.12deg)}
+.menu-card .btn-ghost:nth-of-type(odd){transform:rotate(-.12deg)}
+
 /* Game shell */
 .game{background:transparent;}
 .turnbar{
@@ -196,6 +235,8 @@ input[type=text]:focus{border-color:rgba(215,164,95,.62);box-shadow:0 0 0 3px rg
 
 @media (max-width:700px){
   .menu-card{border-radius:29px 23px 31px 22px / 24px 30px 23px 29px;}
+  .gw-lobby-illustration{height:116px;margin:-5px -5px 16px}
+  .gw-lobby-illustration svg{width:112%;margin-left:-6%}
 }
 
 /* Illustrated jeweler's worktable layer — decorative only, never intercepts play. */
@@ -218,6 +259,12 @@ body[data-gw-moment="win"] #gemwright-worktable-art{opacity:.5}body[data-gw-mome
 @keyframes gw-spark-pop{0%{opacity:0;transform:scale(.4) rotate(-10deg)}70%{opacity:1;transform:scale(1.18) rotate(3deg)}100%{transform:none}}
 @keyframes gw-table-wiggle{0%{transform:rotate(-.35deg)}55%{transform:rotate(.35deg)}100%{transform:none}}
 @media(max-width:820px){#gemwright-worktable-art svg{width:190px;right:-74px;bottom:21%;opacity:.55}.patrons .noble::after{transform:scale(.75);transform-origin:top right}.treasury::before{display:none}}
+
+@media (prefers-reduced-motion:no-preference){
+  body[data-gw-moment="rest"] .gw-lobby-illustration .s1{animation:gw-lobby-twinkle .7s ease-out both}
+}
+@keyframes gw-lobby-twinkle{0%{opacity:0;transform:scale(.45) rotate(-8deg)}70%{opacity:1;transform:scale(1.12) rotate(2deg)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.gw-lobby-illustration svg{transform:none}.menu-card .btn-ghost{transform:none!important}}
 @media(prefers-reduced-motion:reduce){body[data-gw-moment] .gemrow.sel .jw,body[data-gw-moment] .tsel .jw,body[data-gw-moment] #gemwright-worktable-art .gw-spark,body[data-gw-moment] .turnbar.mine{animation:none!important}}
 
 /* Full illustrated interface system ------------------------------------------------ */
